@@ -1,0 +1,33 @@
+name: release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  bundle:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - run: pip install esphome==2026.9.1
+
+      - run: esphome config lezen-fan.yaml
+
+      - run: >
+          esphome bundle lezen-fan.yaml
+          -o lezen-fan-${{ github.ref_name }}.esphomebundle.tar.gz
+
+      - run: >
+          gh release create ${{ github.ref_name }}
+          lezen-fan-${{ github.ref_name }}.esphomebundle.tar.gz
+          --generate-notes
+        env:
+          GH_TOKEN: ${{ github.token }}
