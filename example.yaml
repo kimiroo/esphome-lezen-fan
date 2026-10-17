@@ -1,0 +1,20 @@
+substitutions:
+  name: lezen-fan-01
+  friendly_name: lezen-fan-01
+
+packages:
+  lezen_fan: github://kimiroo/esphome-lezen-fan/lezen-fan.yaml@v1.0.0
+
+api:
+  encryption:
+    key: !secret lezen_fan_01_api_key
+
+ota:
+  - id: esphome_ota
+    password: !secret lezen_fan_01_ota_password
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  ap:
+    password: !secret lezen_fan_01_ap_password

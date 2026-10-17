@@ -1,0 +1,131 @@
+# Lezen BLE fan controller package
+#
+# Optional substitutions: name, friendly_name
+# Credentials are NOT included. Add them in your device YAML:
+#   api.encryption.key, ota[id: esphome_ota].password,
+#   wifi.ssid / wifi.password, wifi.ap.password
+# See example.yaml.
+
+substitutions:
+  name: lezen-fan
+  friendly_name: Lezen Fan
+
+esphome:
+  name: ${name}
+  friendly_name: ${friendly_name}
+  libraries:
+    - "h2zero/NimBLE-Arduino"
+    - Preferences
+  project:
+    name: kimiroo.lezen-fan
+    version: "1.0.0"
+
+dashboard_import:
+  package_import_url: github://kimiroo/esphome-lezen-fan/lezen-fan.yaml@v1.0.0
+
+esp32:
+  board: esp32dev
+  framework:
+    type: esp-idf
+
+esp32_ble:
+
+logger:
+
+api:
+
+ota:
+  - platform: esphome
+    id: esphome_ota
+
+wifi:
+  ap:
+    ssid: "${friendly_name} Fallback"
+
+captive_portal:
+
+web_server:
+  version: 3
+
+external_components:
+  - source: github://kimiroo/esphome-lezen-fan@v1.0.0
+    components: [lezen_fan_ble]
+
+lezen_fan_ble:
+  id: fan_ble
+
+button:
+  - platform: template
+    name: "Fan Pair"
+    on_press:
+      - lambda: 'id(fan_ble)->pair();'
+
+  - platform: template
+    name: "Fan Power On"
+    on_press:
+      - lambda: 'id(fan_ble)->send_cmd(0);'
+
+  - platform: template
+    name: "Fan Power Off"
+    on_press:
+      - lambda: 'id(fan_ble)->send_cmd(1);'
+
+  - platform: template
+    name: "Fan Speed Up"
+    on_press:
+      - lambda: 'id(fan_ble)->send_cmd(2);'
+
+  - platform: template
+    name: "Fan Speed Down"
+    on_press:
+      - lambda: 'id(fan_ble)->send_cmd(3);'
+
+  - platform: template
+    name: "Fan Timer Up"
+    on_press:
+      - lambda: 'id(fan_ble)->send_cmd(4);'
+
+  - platform: template
+    name: "Fan Timer Down"
+    on_press:
+      - lambda: 'id(fan_ble)->send_cmd(5);'
+
+  - platform: template
+    name: "Fan Vertical Oscillation Toggle"
+    on_press:
+      - lambda: 'id(fan_ble)->send_cmd(6);'
+
+  - platform: template
+    name: "Fan Horizontal Oscillation Toggle"
+    on_press:
+      - lambda: 'id(fan_ble)->send_cmd(7);'
+
+  - platform: template
+    name: "Fan 3D Oscillation Toggle"
+    on_press:
+      - lambda: 'id(fan_ble)->send_cmd(8);'
+
+  - platform: template
+    name: "Fan Oscillation Cancel"
+    on_press:
+      - lambda: 'id(fan_ble)->send_cmd(9);'
+
+  - platform: template
+    name: "Fan Sleep Wind"
+    on_press:
+      - lambda: 'id(fan_ble)->send_cmd(10);'
+
+  - platform: template
+    name: "Fan Natural Wind"
+    on_press:
+      - lambda: 'id(fan_ble)->send_cmd(11);'
+
+  - platform: template
+    name: "Fan Normal Wind"
+    on_press:
+      - lambda: 'id(fan_ble)->send_cmd(12);'
+
+  - platform: template
+    name: "Fan Eco Wind"
+    on_press:
+      - lambda: 'id(fan_ble)->send_cmd(13);'
