@@ -2,7 +2,8 @@ name: release
 
 on:
   push:
-    tags: ['v*']
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'   # stable only: v1.0.0, v1.2.10 (no -rc, -beta, ...)
 
 permissions:
   contents: write
@@ -10,24 +11,33 @@ permissions:
 jobs:
   bundle:
     runs-on: ubuntu-latest
+    env:
+      TAG: ${{ github.ref_name }}
+      FILE: lezen-fan-${{ github.ref_name }}.esphomebundle.tar.gz
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v7
 
-      - uses: actions/setup-python@v5
+      - name: Set up Python
+        uses: actions/setup-python@v7
         with:
-          python-version: '3.12'
+          python-version: '3.14'
 
-      - run: pip install esphome==2026.9.1
+      - name: Install ESPHome
+        run: pip install esphome==2026.9.1
 
-      - run: esphome config lezen-fan.yaml
+      - name: Validate config
+        run: esphome config lezen-fan.yaml
 
-      - run: >
-          esphome bundle lezen-fan.yaml
-          -o lezen-fan-${{ github.ref_name }}.esphomebundle.tar.gz
+      - name: Build bundle
+        run: esphome bundle lezen-fan.yaml -o "$FILE"
 
-      - run: >
-          gh release create ${{ github.ref_name }}
-          lezen-fan-${{ github.ref_name }}.esphomebundle.tar.gz
-          --generate-notes
+      - name: Upload bundle to release
         env:
           GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" "$FILE" --clobber
+          else
+            gh release create "$TAG" "$FILE" --generate-notes
+          fi
