@@ -2,7 +2,7 @@
 #
 # Optional substitutions: name, friendly_name
 # Credentials are NOT included. Add them in your device YAML:
-#   api.encryption.key, ota[id: esphome_ota].password,
+#   api.encryption.key, ota[id: esphome_ota].encryption (reuses the api key),
 #   wifi.ssid / wifi.password, wifi.ap.password
 # See example.yaml.
 
@@ -21,7 +21,7 @@ esphome:
     version: "1.0.0"
 
 dashboard_import:
-  package_import_url: github://kimiroo/esphome-lezen-fan/lezen-fan.yaml@v1.0.0
+  package_import_url: github://kimiroo/esphome-lezen-fan/lezen-fan.yaml@v1.0.1
 
 esp32:
   board: esp32dev
@@ -46,9 +46,10 @@ captive_portal:
 
 web_server:
   version: 3
+  ota: false  # plaintext /update is not covered by OTA encryption
 
 external_components:
-  - source: github://kimiroo/esphome-lezen-fan@v1.0.0
+  - source: github://kimiroo/esphome-lezen-fan@v1.0.1
     components: [lezen_fan_ble]
 
 lezen_fan_ble:

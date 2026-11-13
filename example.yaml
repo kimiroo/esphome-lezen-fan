@@ -3,15 +3,15 @@ substitutions:
   friendly_name: lezen-fan-01
 
 packages:
-  lezen_fan: github://kimiroo/esphome-lezen-fan/lezen-fan.yaml@v1.0.0
+  lezen_fan: github://kimiroo/esphome-lezen-fan/lezen-fan.yaml@v1.0.1
 
 api:
   encryption:
     key: !secret lezen_fan_01_api_key
 
 ota:
-  - id: esphome_ota
-    password: !secret lezen_fan_01_ota_password
+  - id: !extend esphome_ota
+    encryption:  # reuses the api encryption key
 
 wifi:
   ssid: !secret wifi_ssid
